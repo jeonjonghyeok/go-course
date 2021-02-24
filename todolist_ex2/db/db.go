@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 
-	_ "github.com/sql/pq"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
