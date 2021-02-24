@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func TodolistAPI() http.Handler {
+func TodoListAPI() http.Handler {
 	router := mux.NewRouter()
 	router.HandleFunc("/lists", getTodoLists).Methods(http.MethodGet)
 

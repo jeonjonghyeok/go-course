@@ -13,6 +13,7 @@ type Config struct {
 }
 
 func ListenAndServe(cfg Config) {
-	db.Connect(cfg.DatabaseURL)
+	err := db.Connect(cfg.DatabaseURL)
+	must(err)
 	http.ListenAndServe(cfg.Address, loggingMiddleware(api.TodoListAPI()))
 }
