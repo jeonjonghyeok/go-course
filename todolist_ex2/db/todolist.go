@@ -1,12 +1,19 @@
 package db
 
+import (
+	"github.com/jeonjonghyeok/todolist_ex2/todo"
+)
+
 func GetTodoLists() ([]todo.List, error) {
-	rows, err := db.Query(`SELECT l.id, l.name, i.id, i.text FROM todo_list l left join item_list i on i.ID = l.ID`)
+	lists := []todo.List{}
+	rows, err := DB.Query(`SELECT ID, Name FROM todo_list`)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-
+		var list todo.List
+		rows.Scan(&list.ID, &list.Name)
+		lists = append(lists, list)
 	}
-
+	return lists, nil
 }
