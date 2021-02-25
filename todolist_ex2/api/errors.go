@@ -1,24 +1,24 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
-
-	"github.com/jeonjonghyeok/todolist_ex2/server"
 )
 
-var castWriter interface {
+type castWriter interface {
 	Write(w http.ResponseWriter)
 }
 
-func handlePanic(w http.ResponseWriter, r *http.Request) {
-	if r := recover(); r != nil {
-		if e, ok := r.(castWriter); ok {
-			e.Write(w)
-			return
-		}
-	}
-	defer r.Close()
-	http.ServeHTTP(w, r)
+func handlePanic(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if r := recover(); r != nil {
+				if e, ok := r.(castWriter); ok {
+					e.Write(w)
+				}
+			}
+		}()
+	})
 }
 
 type simpleError struct {
@@ -27,8 +27,8 @@ type simpleError struct {
 }
 
 func (e simpleError) Write(w http.ResponseWriter) {
-	server.WriteHeader(e.status)
-	http.NewEncoder(w).Encode(e.message)
+	w.WriteHeader(e.status)
+	json.NewEncoder(w).Encode(e.message)
 }
 
 var notFoundError = simpleError{

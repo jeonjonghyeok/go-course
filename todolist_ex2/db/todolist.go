@@ -13,7 +13,9 @@ func GetTodoLists() ([]todo.List, error) {
 	for rows.Next() {
 		var list todo.List
 		err := rows.Scan(&list.ID, &list.Name)
-		must(err)
+		if err != nil {
+			return lists, err
+		}
 		lists = append(lists, list)
 	}
 	return lists, nil

@@ -10,7 +10,7 @@ import (
 )
 
 func must(err error) {
-	if err == db.ErrNotFound {
+	if err == db.ErrorNotFound {
 		log.Println("DB Not Found")
 		panic(notFoundError)
 	} else if err != nil {
@@ -20,7 +20,7 @@ func must(err error) {
 }
 
 func writeJSON(w http.ResponseWriter, v interface{}) {
-	w.Header.Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	must(json.NewEncoder(w).Encode(v))
 
 }

@@ -1,3 +1,5 @@
 package db
 
-ErrorNotFound := error.NewError("db not found")
+import "errors"
+
+var ErrorNotFound = errors.New("db not found")
