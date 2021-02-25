@@ -1,13 +1,16 @@
 package server
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
 
 type responseWriterCapture struct {
 	http.ResponseWriter
 	status int
 }
 
-func (r responseWriterCapture) WriteHeader(status int) {
+func (r *responseWriterCapture) WriteHeader(status int) {
 	r.status = status
 }
 
@@ -18,5 +21,6 @@ func loggingMiddleware(next http.Handler) http.Handler {
 			status:         http.StatusOK,
 		}
 		next.ServeHTTP(resWriter, r)
+		log.Println(r.Method, r.RequestURI, resWriter.status)
 	})
 }

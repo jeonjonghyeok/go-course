@@ -6,7 +6,7 @@ type List struct {
 }
 
 type ListwithItem struct {
-	List  List
+	List
 	Items []Item `json:"items"`
 }
 

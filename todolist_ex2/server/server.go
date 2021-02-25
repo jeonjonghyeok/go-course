@@ -12,7 +12,12 @@ type Config struct {
 	DatabaseURL string
 }
 
-func ListenAndServe(cfg Config) {
-	db.Connect(cfg.DatabaseURL)
-	http.ListenAndServe(cfg.Address, loggingMiddleware(api.TodoListAPI()))
+func ListenAndServe(cfg Config) error {
+	err := db.Connect(cfg.DatabaseURL)
+	if err != nil {
+		return err
+	}
+
+	return http.ListenAndServe(cfg.Address, loggingMiddleware(api.TodoListAPI()))
+
 }
