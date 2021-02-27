@@ -57,3 +57,8 @@ func GetTodoList(todoListID int) (todo.ListwithItem, error) {
 	return list, nil
 
 }
+
+func CreateTodoList(name string) (list todo.List, err error) {
+	err = DB.QueryRow(`INSERT INTO todo_list values (name) $1 RETURNING id`, name).Scan(&list.ID)
+	return
+}

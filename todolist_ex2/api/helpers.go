@@ -28,9 +28,8 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 
 }
 
-func parseJSON(r io.Reader, v interface{}) interface{} {
+func parseJSON(r io.Reader, v interface{}) {
 	json.NewDecoder(r).Decode(v)
-	return v
 }
 
 func parseIntParam(r *http.Request, key string) int {
