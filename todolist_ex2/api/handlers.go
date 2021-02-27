@@ -13,8 +13,8 @@ func getTodoLists(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTodoList(w http.ResponseWriter, r *http.Request) {
-	list_id := parseIntParam(r, "list_id")
-	list, err := db.GetTodoList(list_id)
+	listID := parseIntParam(r, "list_id")
+	list, err := db.GetTodoList(listID)
 	must(err)
 	writeJSON(w, list)
 }

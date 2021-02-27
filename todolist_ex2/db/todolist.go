@@ -21,14 +21,18 @@ func GetTodoLists() ([]todo.List, error) {
 	return lists, nil
 }
 
-func GetTodoList(list_id int) (todo.ListwithItem, error) {
+func GetTodoList(todoListID int) (todo.ListwithItem, error) {
 	var list todo.ListwithItem
-	rows, err := DB.Query(`SELECT l.ID, l.Name, i.ID, i.text, i.Done from todo_list l left join todo_item i on l.ID == i.todo_list_ID where l.ID == $1`, list_id)
+	rows, err := DB.Query(`SELECT l.id, l.name, i.id, i.text, i.done 
+		FROM todo_list l
+		LEFT JOIN todo_item i ON l.id = i.todo_list_id 
+		WHERE l.id = $1`, todoListID)
 	if err != nil {
 		return list, err
 	}
 	defer rows.Close()
 	list.Items = []todo.Item{}
+	var gotTodoList bool
 	for rows.Next() {
 		var (
 			itemID   *int
@@ -38,12 +42,16 @@ func GetTodoList(list_id int) (todo.ListwithItem, error) {
 		if err := rows.Scan(&list.ID, &list.Name, &itemID, &itemText, &itemDone); err != nil {
 			return list, err
 		}
+		gotTodoList = true
 		if itemID != nil && itemText != nil && itemDone != nil {
 			list.Items = append(list.Items, todo.Item{
 				ID:   *itemID,
 				Text: *itemText,
 				Done: *itemDone,
 			})
+		}
+		if !gotTodoList {
+			return list, ErrorNotFound
 		}
 	}
 	return list, nil

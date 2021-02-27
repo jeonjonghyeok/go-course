@@ -11,5 +11,7 @@ func TodoListAPI() http.Handler {
 	router.HandleFunc("/lists", getTodoLists).Methods(http.MethodGet)
 	router.HandleFunc("/list/{list_id}", getTodoList).Methods(http.MethodGet)
 
+	router.Use(handlePanic)
+
 	return router
 }

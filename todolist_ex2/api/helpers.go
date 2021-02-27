@@ -17,7 +17,7 @@ func must(err error) {
 		log.Println("DB Not Found")
 		panic(notFoundError)
 	} else if err != nil {
-		log.Println("Internal Error")
+		log.Println("Internal Error", err)
 		panic(internalError)
 	}
 }
@@ -36,8 +36,9 @@ func parseJSON(r io.Reader, v interface{}) interface{} {
 func parseIntParam(r *http.Request, key string) int {
 	vars := mux.Vars(r)
 	if v, ok := vars[key]; ok {
-		if e, err := strconv.Atoi(v); err == nil {
-			return e
+		i, err := strconv.Atoi(v)
+		if err == nil {
+			return i
 		}
 	}
 	panic(malformedInputError)

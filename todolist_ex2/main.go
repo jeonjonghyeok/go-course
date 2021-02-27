@@ -14,6 +14,6 @@ func main() {
 			DatabaseURL: "postgres://postgres:tododbpasswd123@tododb.learningspoons.danslee.com:5432/postgres?sslmode=require",
 		})
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 }
