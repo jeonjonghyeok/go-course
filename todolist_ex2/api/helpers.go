@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-
 	"github.com/jeonjonghyeok/todolist_ex2/db"
 )
 
@@ -29,15 +28,14 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 }
 
 func parseJSON(r io.Reader, v interface{}) {
-	json.NewDecoder(r).Decode(v)
+	must(json.NewDecoder(r).Decode(v))
 }
 
-func parseIntParam(r *http.Request, key string) int {
+func parseIntParam(r *http.Request, key string) (id int) {
 	vars := mux.Vars(r)
 	if v, ok := vars[key]; ok {
-		i, err := strconv.Atoi(v)
-		if err == nil {
-			return i
+		if id, err := strconv.Atoi(v); err == nil {
+			return id
 		}
 	}
 	panic(malformedInputError)

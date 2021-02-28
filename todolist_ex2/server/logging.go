@@ -12,6 +12,7 @@ type responseWriterCapture struct {
 
 func (r *responseWriterCapture) WriteHeader(status int) {
 	r.status = status
+	r.ResponseWriter.WriteHeader(status)
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {
