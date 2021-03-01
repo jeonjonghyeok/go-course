@@ -15,7 +15,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func main() {
-	if err := http.ListenAndServe(":8080", handler()); err != nil {
+	if err := http.ListenAndServe(":5000", handler()); err != nil {
 		log.Fatalln(err)
 	}
 }
@@ -28,7 +28,18 @@ func handler() http.Handler {
 			return
 		}
 		defer conn.Close()
-		_, msg, err := conn.ReadMessage()
-		fmt.Println(msg)
+
+		for {
+			typ, msg, err := conn.ReadMessage()
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			fmt.Println("msg: ", string(msg))
+			if err := conn.WriteMessage(typ, msg); err != nil {
+				log.Println(err)
+				return
+			}
+		}
 	})
 }

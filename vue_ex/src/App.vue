@@ -1,20 +1,14 @@
 <template>
-<div>
-  <div v-for="(item, idx) in items" :key="idx">
-    {{item}}
-  </div>
-  </div>
+  <Messenger />
 </template>
 
 <script>
-import{ ref } from 'vue'
+//import{ ref } from 'vue'
+import Messenger from './components/Messenger.vue'
 export default {
   name: 'App',
-  setup() {
-      const items=  ref(['one', 'two', 'three'])
-    return {
-      items
-    }
+  components: {
+    Messenger
   }
 }
 </script>
