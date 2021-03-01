@@ -1,12 +1,21 @@
 <template>
-    <div>
-        Some Componens
-    </div>
+<div>
+   {{props.message}} 
+   </div>
 </template>
 
 <script>
 export default {
-    name: 'SomeComponent'
+    name: 'Message',
+    props: {
+        message: String
+    },
+    setup(props){
+        return { 
+            props
+        }
+    }
+
 }
 </script>
 
