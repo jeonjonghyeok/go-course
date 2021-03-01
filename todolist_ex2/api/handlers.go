@@ -49,3 +49,19 @@ func getTodoList(w http.ResponseWriter, r *http.Request) {
 	must(err)
 	writeJSON(w, list)
 }
+
+func modifyTodoItem(w http.ResponseWriter, r *http.Request) {
+	listID := parseIntParam(r, "list_id")
+	itemID := parseIntParam(r, "item_id")
+	var item todo.Item
+	parseJSON(r.Body, &item)
+
+	must(db.ModifyTodoItem(listID, itemID, item.Text, item.Done))
+
+}
+
+func deleteTodoItem(w http.ResponseWriter, r *http.Request) {
+	listID := parseIntParam(r, "list_id")
+	itemID := parseIntParam(r, "item_id")
+	must(db.DeleteTodoItem(listID, itemID))
+}

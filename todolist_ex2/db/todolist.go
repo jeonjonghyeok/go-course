@@ -59,6 +59,8 @@ func ModifyTodoList(listID int, name string) error {
 
 func GetTodoList(listID int) (todo.ListwithItem, error) {
 	var list todo.ListwithItem
+	var gotTodoList bool
+	gotTodoList = false
 	rows, err := DB.Query(`SELECT l.id, l.name, i.id, i.text, i.done
 		FROM todo_list l
 		LEFT JOIN todo_item i
@@ -70,16 +72,47 @@ func GetTodoList(listID int) (todo.ListwithItem, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var (
-			id   int
-			text string
-			done bool
+			id   *int
+			text *string
+			done *bool
 		)
-		rows.Scan(&list.ID, &list.Name, &id, &text, &done)
-		list.Items = append(list.Items, todo.Item{
-			ID:   id,
-			Text: text,
-			Done: done,
-		})
+		if err := rows.Scan(&list.ID, &list.Name, &id, &text, &done); err != nil {
+			return list, err
+		}
+		gotTodoList = true
+		if id != nil && text != nil && done != nil {
+			list.Items = append(list.Items, todo.Item{
+				ID:   *id,
+				Text: *text,
+				Done: *done,
+			})
+		}
+	}
+	if !gotTodoList {
+		return list, ErrorNotFound
 	}
 	return list, nil
+}
+
+func ModifyTodoItem(listID int, itemID int, text string, done bool) error {
+	res, err := DB.Exec(`UPDATE todo_item SET text=$1, done=$2
+		WHERE todo_list_id = $3 AND id = $4`, text, done, listID, itemID)
+	if err != nil {
+		return err
+	}
+	if r, err := res.RowsAffected(); r == 0 || err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteTodoItem(listID int, itemID int) error {
+	res, err := DB.Exec(`DELETE FROM todo_item WHERE todo_list_id = $1 and id = $2`, listID, itemID)
+	if err != nil {
+		return err
+	}
+	if r, err := res.RowsAffected(); r == 0 || err != nil {
+		return ErrorNotFound
+	}
+	return nil
 }
