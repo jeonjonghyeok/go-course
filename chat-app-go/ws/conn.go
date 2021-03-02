@@ -1,1 +1,5 @@
 package ws
+
+func newConn() {
+
+}
