@@ -21,5 +21,6 @@ func MessageHandler() http.Handler {
 			return
 		}
 		newConn(conn)
+
 	})
 }
