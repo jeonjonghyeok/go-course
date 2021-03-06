@@ -42,7 +42,7 @@ func readPump(c *conn) {
 
 	c.wsConn.SetReadDeadline(time.Now().Add(readTimeout))
 	c.wsConn.SetReadLimit(maxMessageSize)
-	c.wsConn.SetPongHander(func(string) error {
+	c.wsConn.SetPongHandler(func(string) error {
 		log.Println("get pong")
 		c.wsConn.SetReadDeadline(time.Now().Add(readTimeout))
 		return nil
@@ -82,7 +82,7 @@ func writePump(c *conn) {
 			if !more {
 				return
 			}
-			c.wsConn.WriteControl(websocket.pongMessage, nil, time.Now().Add(writeTimeout))
+			c.wsConn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeTimeout))
 		}
 	}
 
