@@ -31,11 +31,12 @@ func newConn(conn *websocket.Conn) *newconn {
 func (c *newconn) run() {
 	c.wg.Add(2)
 
-	addConn(c.ch)
+	id := addConn(c.ch)
 
 	go c.readPump()
 	go c.writePump()
 	c.wg.Wait()
+	deleteConn(id)
 	c.wsConn.Close()
 }
 func (c *newconn) readPump() {
