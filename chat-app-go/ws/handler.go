@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrade{
+var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 	ReadBufferSize:  1024,
 	CheckOrigin:     func(r *http.Request) bool { return true },
@@ -20,7 +20,7 @@ func MessageHandler() http.Handler {
 			log.Println(err)
 			return
 		}
-		newConn(conn)
+		newConn(conn).run()
 
 	})
 }
