@@ -20,6 +20,7 @@ func MessageHandler() http.Handler {
 			log.Println(err)
 			return
 		}
+		defer conn.Close()
 		newConn(conn).run()
 
 	})

@@ -30,7 +30,9 @@ func newConn(conn *websocket.Conn) *newconn {
 
 func (c *newconn) run() {
 	c.wg.Add(2)
+
 	addConn(c.ch)
+
 	go c.readPump()
 	go c.writePump()
 	c.wg.Wait()
@@ -57,14 +59,17 @@ func (c *newconn) readPump() {
 			continue
 		}
 		log.Println("readPump msg= ", string(msg))
-		c.ch <- msg
+
+		send(msg)
+		//c.ch <- msg
 	}
 }
 func (c *newconn) writePump() {
 	defer c.wg.Done()
+
 	ticker := time.NewTicker(pingPeriod)
 	defer ticker.Stop()
-	c.wsConn.SetWriteDeadline(time.Now().Add(writeTimeout))
+
 	for {
 		select {
 		case msg, more := <-c.ch:
@@ -72,6 +77,7 @@ func (c *newconn) writePump() {
 				return
 			}
 			log.Println("writePump msg= ", string(msg))
+			c.wsConn.SetWriteDeadline(time.Now().Add(writeTimeout))
 			err := c.wsConn.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
 				log.Println(err)
