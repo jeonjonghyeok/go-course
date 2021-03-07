@@ -51,6 +51,7 @@ func readPump(c *conn) {
 	for {
 		typ, msg, err := c.wsConn.ReadMessage()
 		if err != nil {
+			close(c.send)
 			log.Println(err)
 			return
 		}
@@ -76,12 +77,13 @@ func writePump(c *conn) {
 			}
 			log.Println("msg= ", string(msg))
 			c.wsConn.SetWriteDeadline(time.Now().Add(writeTimeout))
-			c.wsConn.WriteMessage(websocket.TextMessage, msg)
-
-		case _, more := <-ticker.C:
-			if !more {
+			if err := c.wsConn.WriteMessage(websocket.TextMessage, msg); err != nil {
+				log.Println(err)
 				return
 			}
+
+		case <-ticker.C:
+			log.Println("send ping")
 			c.wsConn.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeTimeout))
 		}
 	}
