@@ -3,8 +3,8 @@
 </template>
 
 <script>
-//import{ ref } from 'vue'
 import Messenger from './components/Messenger.vue'
+
 export default {
   name: 'App',
   components: {
@@ -14,7 +14,10 @@ export default {
 </script>
 
 <style>
-  body{
-    background-color:#bbc9e0;
-  } 
+body {
+  background-color: #bbc9e0;
+  padding: 0;
+}
 </style>
+
+

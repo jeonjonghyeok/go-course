@@ -2,6 +2,7 @@ package chat
 
 import (
 	"sync"
+	"time"
 )
 
 type Room struct {
@@ -11,7 +12,7 @@ type Room struct {
 }
 
 type Conn interface {
-	Send([]byte)
+	Send(Message)
 }
 
 var globalRoom *Room
@@ -43,9 +44,11 @@ func (r *Room) RemoveParticipant(id int) {
 	delete(r.participant, id)
 }
 
-func (r *Room) SendMessage(msg []byte) {
+func (r *Room) SendMessage(msg Message) {
 	r.mux.Lock()
 	defer r.mux.Unlock()
+
+	msg.SentOn = time.Now().UTC()
 
 	for _, v := range r.participant {
 		v.Send(msg)

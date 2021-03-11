@@ -3,7 +3,7 @@ package chat
 import "time"
 
 type Message struct {
-	text   string    `json:"text"`
-	sender string    `json:"sender"`
-	sentOn time.Time `json:"sentOn`
+	Text   string    `json:"text"`
+	Sender string    `json:"sender"`
+	SentOn time.Time `json:"sentOn`
 }

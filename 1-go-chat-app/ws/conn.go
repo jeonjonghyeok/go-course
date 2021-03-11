@@ -18,18 +18,18 @@ const (
 
 type conn struct {
 	wsConn *websocket.Conn
-	send   chan []byte
+	send   chan chat.Message
 	wg     sync.WaitGroup
 }
 
-func (c *conn) Send(msg []byte) {
+func (c *conn) Send(msg chat.Message) {
 	c.send <- msg
 }
 
 func newConn(c *websocket.Conn) *conn {
 	return &conn{
 		wsConn: c,
-		send:   make(chan []byte),
+		send:   make(chan chat.Message),
 	}
 }
 
@@ -57,16 +57,14 @@ func readPump(c *conn) {
 	})
 
 	for {
-		typ, msg, err := c.wsConn.ReadMessage()
+		var msg chat.Message
+		err := c.wsConn.ReadJSON(&msg)
 		if err != nil {
 			close(c.send)
 			log.Println(err)
 			return
 		}
-		if typ != websocket.TextMessage {
-			continue
-		}
-		log.Println(string(msg))
+		log.Println(msg)
 
 		chat.GetRoom().SendMessage(msg)
 		//c.send <- msg
@@ -87,7 +85,7 @@ func writePump(c *conn) {
 				return
 			}
 			c.wsConn.SetWriteDeadline(time.Now().Add(writeTimeout))
-			if err := c.wsConn.WriteMessage(websocket.TextMessage, msg); err != nil {
+			if err := c.wsConn.WriteJSON(msg); err != nil {
 				log.Println(err)
 				return
 			}
