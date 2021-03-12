@@ -1,5 +1,6 @@
 package chat
 
+/*
 import (
 	"sync"
 	"time"
@@ -54,3 +55,4 @@ func (r *Room) SendMessage(msg Message) {
 		v.Send(msg)
 	}
 }
+*/

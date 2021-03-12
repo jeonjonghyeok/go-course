@@ -1,14 +1,12 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
-	"github.com/jeonjonghyeok/go-run/1-go-chat-app/ws"
+	"github.com/jeonjonghyeok/go-run/1-go-chat-app/server"
 )
 
 func main() {
-	if err := http.ListenAndServe(":5000", ws.Handler()); err != nil {
-		log.Fatal(err)
-	}
+	server.ListenAndServe(server.Config{
+		Address: ":5000",
+		Url:     "postgres://postgres:chatdbpasswd123@chatdb.learningspoons.danslee.com:5432/postgres",
+	})
 }

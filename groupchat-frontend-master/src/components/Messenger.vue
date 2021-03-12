@@ -31,7 +31,7 @@ export default {
   },
   setup(props, {emit}) {
     const myID = ref('');
-    const socket = new WebSocket(`ws://localhost:8080/room/${props.roomID}?token=${encodeURIComponent(props.token)}`);
+    const socket = new WebSocket(`ws://localhost:5000/room/${props.roomID}?token=${encodeURIComponent(props.token)}`);
     const messages = ref([]);
 
     const parseJwt = (token) => {

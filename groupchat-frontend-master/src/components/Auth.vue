@@ -44,7 +44,7 @@ export default {
       valid: computed(() => username.value.trim() !== '' && password.value !== ''),
       submit: async () => {
         try {
-          const resp = await fetch(`http://localhost:8080/${mode.value}`,
+          const resp = await fetch(`http://localhost:5000/${mode.value}`,
             {
               method: 'POST',
               body: JSON.stringify({

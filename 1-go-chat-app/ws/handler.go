@@ -1,5 +1,6 @@
 package ws
 
+/*
 import (
 	"log"
 	"net/http"
@@ -25,3 +26,4 @@ func Handler() http.Handler {
 	})
 
 }
+*/

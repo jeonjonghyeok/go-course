@@ -38,7 +38,7 @@ export default {
     const roomName = ref('')
 
     const fetchRooms = async () => {
-      const resp = await fetch('http://localhost:8080/rooms')
+      const resp = await fetch('http://localhost:5000/rooms')
       const parsed = await resp.json()
       rooms.value = parsed
     }
@@ -46,7 +46,7 @@ export default {
     fetchRooms().then(() => emit('selectChange', rooms.value[0]))
 
     const addRoom = async () => {
-      await fetch('http://localhost:8080/room', {
+      await fetch('http://localhost:5000/room', {
         method: 'POST',
         body: JSON.stringify({
           'name': roomName.value

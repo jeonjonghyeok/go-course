@@ -1,5 +1,6 @@
 package ws
 
+/*
 import (
 	"log"
 	"sync"
@@ -97,3 +98,4 @@ func writePump(c *conn) {
 	}
 
 }
+*/
