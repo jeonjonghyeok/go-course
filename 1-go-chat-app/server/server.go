@@ -14,7 +14,9 @@ type Config struct {
 }
 
 func ListenAndServe(c Config) {
-	db.Connect(c.Url)
+	if err := db.Connect(c.Url); err != nil {
+		log.Fatal(err)
+	}
 
 	if err := http.ListenAndServe(":5000", api.ChatAPI()); err != nil {
 		log.Fatal(err)
