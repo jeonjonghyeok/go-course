@@ -13,4 +13,5 @@ func CreateUser(user chat.User) (int, error) {
 	}
 	db.QueryRow("INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id", user.Username, passwd_hash).Scan(&id)
 	return id, nil
+
 }
