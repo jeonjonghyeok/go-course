@@ -1,6 +1,5 @@
 package ws
 
-/*
 import (
 	"log"
 	"net/http"
@@ -11,19 +10,17 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-	CheckOrigin:     func(*http.Request) bool { return true },
+	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-func Handler() http.Handler {
+func ChatHandler(id int, chatid int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		c, err := upgrader.Upgrade(w, r, nil)
+		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		defer c.Close()
-		newConn(c).run()
-	})
+		newConn(conn, id, chatid).run()
 
+	})
 }
-*/

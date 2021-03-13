@@ -6,7 +6,7 @@ import (
 )
 
 func must(e error) {
-	panic(e)
+	panic(internalError)
 }
 
 type apiErrorWriter interface {
@@ -34,5 +34,21 @@ type simpleError struct {
 }
 
 func (e simpleError) Write(w http.ResponseWriter) {
+	w.WriteHeader(e.status)
 	json.NewEncoder(w).Encode(e.message)
+}
+
+var notFoundError = simpleError{
+	message: "Not found",
+	status:  http.StatusNotFound,
+}
+
+var internalError = simpleError{
+	message: "Internal error",
+	status:  http.StatusInternalServerError,
+}
+
+var malformedInputError = simpleError{
+	message: "Malformed input",
+	status:  http.StatusBadRequest,
 }
