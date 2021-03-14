@@ -5,10 +5,6 @@ import (
 	"net/http"
 )
 
-func must(e error) {
-	panic(internalError)
-}
-
 type apiErrorWriter interface {
 	Write(w http.ResponseWriter)
 }
@@ -26,6 +22,10 @@ func handlePanic(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 
+}
+
+type errorResponse struct {
+	Error string `json:"error"`
 }
 
 type simpleError struct {
@@ -51,4 +51,9 @@ var internalError = simpleError{
 var malformedInputError = simpleError{
 	message: "Malformed input",
 	status:  http.StatusBadRequest,
+}
+
+var unauthorizedError = simpleError{
+	message: "Unauthorized",
+	status:  http.StatusUnauthorized,
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/jeonjonghyeok/go-run/1-go-chat-app/chat"
@@ -10,9 +11,8 @@ import (
 )
 
 func signup(w http.ResponseWriter, r *http.Request) {
-	req := chat.User{}
+	var req chat.User
 	parseJSON(r.Body, &req)
-
 	id, err := db.CreateUser(req)
 	must(err)
 	token, err := token.New(id)
@@ -26,24 +26,23 @@ func signin(w http.ResponseWriter, r *http.Request) {
 	req := chat.User{}
 	parseJSON(r.Body, &req)
 	id, err := db.FindUser(req.Username, req.Password)
-	if err != nil {
-		must(err)
-	}
+	must(err)
 
 	token, err := token.New(id)
-	if err != nil {
-		must(err)
-	}
+	must(err)
 	writeJSON(w, struct {
 		Token string `json:"token"`
 	}{token})
 }
 
 func createRoom(w http.ResponseWriter, r *http.Request) {
-	var req string
+	log.Println("create Room")
+	var req struct {
+		Name string `json:"name"`
+	}
 	parseJSON(r.Body, &req)
 
-	id, err := db.CreateRoom(req)
+	id, err := db.CreateRoom(req.Name)
 	if err != nil {
 		must(err)
 	}

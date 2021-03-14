@@ -8,9 +8,17 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/jeonjonghyeok/go-run/1-go-chat-app/db"
 	"github.com/jeonjonghyeok/go-run/1-go-chat-app/token"
 )
 
+func must(err error) {
+	if err == db.ErrUnauthorized {
+		panic(unauthorizedError)
+	} else if err != nil {
+		panic(internalError)
+	}
+}
 func parseJSON(r io.Reader, v interface{}) {
 	err := json.NewDecoder(r).Decode(v)
 	if err != nil {

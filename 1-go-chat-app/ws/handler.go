@@ -20,7 +20,10 @@ func ChatHandler(id int, chatid int) http.Handler {
 			log.Println(err)
 			return
 		}
-		newConn(conn, id, chatid).run()
+		defer conn.Close()
+		if err := newConn(conn, id, chatid).run(); err != nil {
+			log.Println(err)
+		}
 
 	})
 }

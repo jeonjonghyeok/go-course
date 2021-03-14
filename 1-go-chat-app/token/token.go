@@ -8,7 +8,7 @@ import (
 )
 
 type customClaims struct {
-	UserID int
+	UserID int `json:"uid`
 	jwt.StandardClaims
 }
 
@@ -16,7 +16,7 @@ func New(userid int) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, customClaims{
 		UserID: userid,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 60 * 24 * 30).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 30).Unix(),
 			Issuer:    "jjh",
 		},
 	})

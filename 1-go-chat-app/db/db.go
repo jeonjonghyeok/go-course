@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"log"
 	"sync"
 	"time"
 
@@ -25,20 +26,19 @@ func Connect(url string) error {
 		return err
 	}
 	db = c
+	subscriptions = make(map[string][]subscription)
 
 	listener = pq.NewListener(url, time.Second*10, time.Minute, func(ev pq.ListenerEventType, err error) {
 		if err != nil {
 			panic(err)
 		}
 	})
-	if subscriptions == nil {
-		subscriptions = make(map[string][]subscription)
-	}
 
 	go func() {
 		for n := range listener.NotificationChannel() {
 			if channels, ok := subscriptions[n.Channel]; ok {
 				for _, c := range channels {
+					log.Println("notification")
 					c.c <- n.Extra
 				}
 			}
@@ -68,7 +68,7 @@ func subscribe(name string) subscription {
 	return c
 }
 
-func (c *subscription) Close() {
+func (c *subscription) close() {
 	subscriptionsMux.Lock()
 	defer subscriptionsMux.Unlock()
 	j := 0
