@@ -13,7 +13,7 @@ func ChatAPI() http.Handler {
 	router.HandleFunc("/signin", signin).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/room", createRoom).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/rooms", getRooms).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/room/${id}", connectToRoom).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/room/{id}", connectToRoom).Methods(http.MethodGet, http.MethodOptions)
 
 	router.Use(handlePanic)
 	router.Use(func(next http.Handler) http.Handler {

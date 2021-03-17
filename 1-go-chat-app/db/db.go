@@ -21,6 +21,7 @@ var subscriptions map[string][]subscription
 var subscriptionsMux sync.Mutex
 
 func Connect(url string) error {
+	log.Println("Connect start")
 	c, err := sql.Open("postgres", url)
 	if err != nil {
 		return err
@@ -28,11 +29,12 @@ func Connect(url string) error {
 	db = c
 	subscriptions = make(map[string][]subscription)
 
-	listener = pq.NewListener(url, time.Second*10, time.Minute, func(ev pq.ListenerEventType, err error) {
-		if err != nil {
-			panic(err)
-		}
-	})
+	listener = pq.NewListener(url,
+		time.Second*10, time.Minute, func(ev pq.ListenerEventType, err error) {
+			if err != nil {
+				panic(err)
+			}
+		})
 
 	go func() {
 		for n := range listener.NotificationChannel() {

@@ -27,7 +27,7 @@ func FindUser(username string, password string) (id int, err error) {
 		return 0, ErrUnauthorized
 	}
 	if err != nil {
-		return 0, ErrUnauthorized
+		return 0, err
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(password_hash), []byte(password)); err != nil {

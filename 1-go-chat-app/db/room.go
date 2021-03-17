@@ -24,3 +24,9 @@ func CreateRoom(name string) (id int, err error) {
 	}
 	return
 }
+
+func ExistsRoom(id int) (exist bool, err error) {
+	err = db.QueryRow(`SELECT EXISTS(SELECT 1 FROM chatrooms
+	WHERE id = $1)`, id).Scan(&exist)
+	return
+}

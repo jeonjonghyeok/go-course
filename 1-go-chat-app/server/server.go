@@ -18,7 +18,7 @@ func ListenAndServe(c Config) {
 		log.Fatal(err)
 	}
 
-	if err := http.ListenAndServe(":5000", loggingmiddleware(api.ChatAPI())); err != nil {
+	if err := http.ListenAndServe(c.Address, api.ChatAPI()); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -23,7 +23,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func signin(w http.ResponseWriter, r *http.Request) {
-	req := chat.User{}
+	var req chat.User
 	parseJSON(r.Body, &req)
 	id, err := db.FindUser(req.Username, req.Password)
 	must(err)
@@ -43,9 +43,7 @@ func createRoom(w http.ResponseWriter, r *http.Request) {
 	parseJSON(r.Body, &req)
 
 	id, err := db.CreateRoom(req.Name)
-	if err != nil {
-		must(err)
-	}
+	must(err)
 	writeJSON(w, struct {
 		ID int `json:"id"`
 	}{id})
@@ -58,11 +56,15 @@ func getRooms(w http.ResponseWriter, r *http.Request) {
 }
 
 func connectToRoom(w http.ResponseWriter, r *http.Request) {
-	id, err := userID(r)
-	if err != nil {
-		must(err)
-	}
+	log.Println("connect Room")
+	id := userID(r)
 	chatid := parseIntParam(r, "id")
+	exsist, err := db.ExistsRoom(chatid)
+	must(err)
+
+	if !exsist {
+		panic(notFoundError)
+	}
 
 	ws.ChatHandler(id, chatid).ServeHTTP(w, r)
 

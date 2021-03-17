@@ -11,13 +11,13 @@ import (
 )
 
 const (
-	readTimeout    = time.Second * 10
+	readTimeout    = time.Second * 60
 	writeTimeout   = time.Second * 10
 	maxMessageSize = 512
-	pingPeriod     = time.Second * 5
+	pingPeriod     = time.Second * 10
 )
 
-type Conn struct {
+type conn struct {
 	wg     sync.WaitGroup
 	ws     *websocket.Conn
 	userid int
@@ -25,16 +25,16 @@ type Conn struct {
 	sub    db.ChatroomSubscription
 }
 
-func newConn(ws *websocket.Conn, userid int, chatid int) *Conn {
+func newConn(ws *websocket.Conn, userid int, chatid int) *conn {
 	log.Println("create conn")
-	return &Conn{
+	return &conn{
 		ws:     ws,
 		userid: userid,
 		chatid: chatid,
 	}
 }
 
-func (c *Conn) run() error {
+func (c *conn) run() error {
 	log.Println("run start")
 	sub, err := db.NewChatroomSubscription(c.chatid)
 	if err != nil {
@@ -51,7 +51,8 @@ func (c *Conn) run() error {
 }
 
 //channel에서 데이터 읽는 go루틴
-func (c *Conn) readPump() {
+func (c *conn) readPump() {
+	log.Println("read Pump start")
 	defer c.wg.Done()
 	defer c.sub.Close()
 
@@ -70,12 +71,14 @@ func (c *Conn) readPump() {
 			log.Println(err)
 			return
 		}
+		log.Println("read Message =", c.userid, "chatid", c.chatid, "sender=", msg.Sender)
 		db.SendMessage(c.userid, c.chatid, msg.Text)
 	}
 
 }
 
-func (c *Conn) writePump() {
+func (c *conn) writePump() {
+	log.Println("Write Pump start")
 	defer c.wg.Done()
 	ticker := time.NewTicker(pingPeriod)
 	defer ticker.Stop()
@@ -87,6 +90,7 @@ func (c *Conn) writePump() {
 				return
 			}
 			c.ws.SetWriteDeadline(time.Now().Add(writeTimeout))
+			log.Println(string(msg.Sender))
 			if err := c.ws.WriteJSON(msg); err != nil {
 				log.Println("write JSON error")
 				return

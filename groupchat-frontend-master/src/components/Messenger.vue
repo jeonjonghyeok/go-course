@@ -53,6 +53,7 @@ export default {
       );
     socket.onmessage = messageEvent =>
       messages.value.push(JSON.parse(messageEvent.data));
+    alert(myID)
     return {
       myID,
       messages,

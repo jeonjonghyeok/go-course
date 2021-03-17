@@ -32,13 +32,14 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	must(json.NewEncoder(w).Encode(v))
 }
 
-func userID(r *http.Request) (id int, err error) {
+func userID(r *http.Request) int {
 	t := r.URL.Query().Get("token")
-	id, err = token.Parse(t)
+	id, err := token.Parse(t)
 	if err != nil {
-		return 0, err
+		log.Println(err)
+		panic(unauthorizedError)
 	}
-	return
+	return id
 }
 
 func parseIntParam(r *http.Request, key string) int {

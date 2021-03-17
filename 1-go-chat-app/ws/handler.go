@@ -15,6 +15,7 @@ var upgrader = websocket.Upgrader{
 
 func ChatHandler(id int, chatid int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("ChatHandler start")
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println(err)
